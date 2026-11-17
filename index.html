@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <title>Alerta de Segurança</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:#101827;color:#f9fafb;font-family:Arial,Helvetica,sans-serif}
+    main{width:min(680px,100%);padding:clamp(24px,5vw,48px);border:1px solid #7f1d1d;border-radius:18px;background:#1f2937;box-shadow:0 20px 60px #0008;text-align:center}
+    .tag{display:inline-block;padding:7px 12px;border-radius:999px;background:#7f1d1d;color:#fff;font-size:.8rem;font-weight:700;letter-spacing:.08em}
+    h1{font-size:clamp(2rem,6vw,3.4rem);line-height:1.08;margin:22px 0 12px;color:#fecaca}
+    p{font-size:1.08rem;line-height:1.6;color:#e5e7eb}
+    .timer{font-size:clamp(3.5rem,12vw,6rem);font-weight:800;color:#fca5a5;margin:18px 0;font-variant-numeric:tabular-nums}
+    .bar{height:12px;background:#374151;border-radius:20px;overflow:hidden;margin:20px 0 28px}
+    .fill{height:100%;width:100%;background:#ef4444;transition:width 1s linear}
+    button{border:0;border-radius:10px;padding:13px 22px;background:#f9fafb;color:#111827;font-size:1rem;font-weight:700;cursor:pointer}
+    button:hover{background:#d1d5db}
+    .small{font-size:.88rem;color:#9ca3af}
+    .hidden{display:none}
+    .reveal{border-color:#166534;background:#14251d}
+    .reveal h1{color:#86efac}
+    .reveal .tag{background:#166534}
+    .reveal .timer,.reveal .bar{display:none}
+    .reveal strong{color:#bbf7d0}
+  </style>
+</head>
+<body>
+  <main id="panel" aria-live="polite">
+    <span class="tag">ALERTA DE SEGURANÇA — SIMULAÇÃO</span>
+    <h1 id="headline">OS TEUS DADOS VÃO SER APAGADOS!</h1>
+    <p id="message">Foi detetada uma atividade suspeita. A eliminação simulada começará dentro de:</p>
+    <div class="timer" id="timer">00:30</div>
+    <div class="bar" aria-hidden="true"><div class="fill" id="fill"></div></div>
+    <p id="status">A analisar a situação...</p>
+    <button id="skip" type="button">Ver o que está realmente a acontecer</button>
+    <p class="small">Demonstração educativa. Não feches nem partilhes dados pessoais.</p>
+  </main>
+  <script>
+    (() => {
+      let remaining = 30;
+      let intervalId;
+      const timer = document.getElementById('timer');
+      const fill = document.getElementById('fill');
+      const panel = document.getElementById('panel');
+      const status = document.getElementById('status');
+      const reveal = () => {
+        if (intervalId) clearInterval(intervalId);
+        panel.classList.add('reveal');
+        document.querySelector('.tag').textContent = 'SIMULAÇÃO CONCLUÍDA';
+        document.getElementById('headline').textContent = 'CALMA! É UMA BRINCADEIRA!';
+        document.getElementById('message').innerHTML = '<strong>Nenhum dado foi acedido, recolhido, enviado ou apagado.</strong><br><br>Esta página é apenas uma simulação educativa. O objetivo é mostrar como uma mensagem alarmista pode provocar uma reação impulsiva.';
+        status.textContent = 'Aprende a reconhecer sinais de risco antes de agir.';
+        document.getElementById('skip').textContent = 'Percebi!';
+        document.getElementById('skip').disabled = true;
+        document.querySelector('.small').textContent = 'Dica: nunca introduzas palavras-passe ou dados pessoais depois de abrir um QR Code inesperado. Confirma sempre o endereço e a origem.';
+      };
+      const tick = () => {
+        remaining -= 1;
+        timer.textContent = '00:' + String(remaining).padStart(2, '0');
+        fill.style.width = (remaining / 30 * 100) + '%';
+        if (remaining <= 0) reveal();
+      };
+      document.getElementById('skip').addEventListener('click', reveal);
+      intervalId = setInterval(tick, 1000);
+    })();
+  </script>
+</body>
+</html>
